@@ -1,11 +1,9 @@
+
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import FlavorGrid from '@/components/FlavorGrid';
 import BackButton from '@/components/BackButton';
-// --- CORRECTED IMPORT ---
-// Removed Firebase import reference
-// Import the specific function needed from your Supabase service file
-import { getNewFlavors } from '@/services/supabase.ts'; // Corrected path
+import { getNewFlavors } from '@/services/supabase.ts';
 import { Flavor } from '@/types/flavor';
 
 const NewFlavorsPage = () => {
@@ -17,10 +15,8 @@ const NewFlavorsPage = () => {
     const fetchNewFlavors = async () => {
       try {
         setLoading(true);
-        setError(null); // Reset error
+        setError(null);
 
-        // --- CALLING THE IMPORTED SUPABASE FUNCTION ---
-        // Function name matches the one from supabaseService.ts
         const data = await getNewFlavors();
         setFlavors(data);
       } catch (err) {
@@ -37,35 +33,36 @@ const NewFlavorsPage = () => {
     };
 
     fetchNewFlavors();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95">
       <Navbar />
 
-      {/* Main content area uses flex-1 to grow and flex/col for centering child */}
-      <main className="flex-1 flex flex-col p-4 overflow-auto">
-        {/* Wrapper uses my-auto for vertical centering within the flex-col parent */}
-        {/* items-center centers content horizontally */}
+      <main className="flex-1 flex flex-col p-6 overflow-auto">
         <div className="my-auto flex flex-col items-center w-full">
           {loading ? (
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary border-r-2"></div>
+            <div className="flex flex-col items-center justify-center h-60">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary border-r-2 mb-4"></div>
+              <p className="text-muted-foreground">Loading new flavors...</p>
+            </div>
           ) : error ? (
-            <p className="text-destructive text-center">{error}</p>
+            <div className="p-8 bg-destructive/10 rounded-xl max-w-xl mx-auto text-center">
+              <p className="text-destructive font-medium">{error}</p>
+            </div>
           ) : flavors.length === 0 ? (
-             // Centered message when no new flavors are found
-            <div className="text-center py-16">
-              <h1 className="text-2xl font-bold mb-2">New Flavors</h1>
-              <p className="text-muted-foreground">No recent flavors added.</p>
+            <div className="text-center py-16 max-w-xl">
+              <h1 className="text-3xl font-bold mb-4">New Flavors</h1>
+              <div className="p-12 bg-background/50 border border-dashed border-primary/20 rounded-xl">
+                <p className="text-xl text-muted-foreground">No recent flavors added.</p>
+              </div>
             </div>
           ) : (
-            // Display new flavors grid
             <div className="w-full max-w-5xl">
-              {/* Optional: Add a title above the grid if needed */}
-              {/* <h1 className="text-2xl font-bold text-center mb-6">New Flavors</h1> */}
               <FlavorGrid
                 flavors={flavors}
-                // The 'title' prop might not be needed if handled separately
+                currentCategoryType="E-Liquid"
+                title="Recently Added Flavors"
               />
             </div>
           )}

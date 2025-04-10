@@ -1,12 +1,10 @@
+
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import FlavorGrid from '@/components/FlavorGrid';
 import BackButton from '@/components/BackButton';
-// --- CORRECTED IMPORT ---
-// Removed Firebase import reference
-// Import the specific function needed from your Supabase service file
-import { searchFlavors } from '@/services/supabase.ts'; // Corrected path
+import { searchFlavors } from '@/services/supabase.ts';
 import { Flavor } from '@/types/flavor';
 
 // Helper function to get search query from URL
@@ -16,17 +14,16 @@ function useQuery() {
 
 const SearchPage = () => {
   const queryParams = useQuery();
-  const query = queryParams.get('q') || ''; // Get search query 'q' from URL
+  const query = queryParams.get('q') || '';
 
   const [flavors, setFlavors] = useState<Flavor[]>([]);
-  const [loading, setLoading] = useState(false); // Start as false until query is confirmed
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchResults = async () => {
-      // Only search if there is a query term
       if (!query) {
-        setFlavors([]); // Clear results if query is empty
+        setFlavors([]);
         setLoading(false);
         setError(null);
         return;
@@ -34,10 +31,8 @@ const SearchPage = () => {
 
       try {
         setLoading(true);
-        setError(null); // Reset error
+        setError(null);
 
-        // --- CALLING THE IMPORTED SUPABASE FUNCTION ---
-        // Function name matches the one from supabaseService.ts
         const results = await searchFlavors(query);
         setFlavors(results);
       } catch (err) {
@@ -54,39 +49,40 @@ const SearchPage = () => {
     };
 
     fetchResults();
-  }, [query]); // Re-run effect when the query parameter changes
+  }, [query]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95">
       <Navbar />
 
-      {/* Main content area uses flex-1 to grow and flex/col for centering child */}
-      <main className="flex-1 flex flex-col p-4 overflow-auto">
-        {/* Wrapper uses my-auto for vertical centering within the flex-col parent */}
-        {/* items-center centers content horizontally */}
+      <main className="flex-1 flex flex-col p-6 overflow-auto">
         <div className="my-auto flex flex-col items-center w-full">
           {loading ? (
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary border-r-2"></div>
+            <div className="flex flex-col items-center justify-center h-60">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary border-r-2 mb-4"></div>
+              <p className="text-muted-foreground">Searching for "{query}"...</p>
+            </div>
           ) : error ? (
-            <p className="text-destructive text-center">{error}</p>
+            <div className="p-8 bg-destructive/10 rounded-xl max-w-xl mx-auto text-center">
+              <p className="text-destructive font-medium">{error}</p>
+            </div>
           ) : !query ? (
-            // Message shown if the search URL has no query param (e.g., /search)
-            <p className="text-muted-foreground text-center">Enter a search term in the navigation bar.</p>
+            <div className="text-center p-12 bg-background/50 border border-dashed border-primary/20 rounded-xl max-w-xl">
+              <p className="text-xl text-muted-foreground">Enter a search term in the navigation bar.</p>
+            </div>
           ) : flavors.length === 0 ? (
-            // Message shown if query exists but yields no results
-            <div className="text-center py-16">
-              <h1 className="text-2xl font-bold mb-2">Search Results</h1>
-              <p className="text-muted-foreground">No flavors found matching "{query}".</p>
+            <div className="text-center py-16 max-w-xl">
+              <h1 className="text-3xl font-bold mb-4">Search Results</h1>
+              <div className="p-12 bg-background/50 border border-dashed border-primary/20 rounded-xl">
+                <p className="text-xl text-muted-foreground">No flavors found matching "{query}".</p>
+              </div>
             </div>
           ) : (
-            // Display search results grid
             <div className="w-full max-w-5xl">
-              <h1 className="text-2xl font-bold text-center mb-6">
-                Search Results for "{query}"
-              </h1>
               <FlavorGrid
                 flavors={flavors}
-                // Title prop not needed here as handled by the h1 above
+                currentCategoryType="E-Liquid"
+                title={`Search Results for "${query}"`}
               />
             </div>
           )}

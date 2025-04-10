@@ -26,7 +26,7 @@ const TypePage = () => {
         return 'https://plus.unsplash.com/premium_photo-1668445096155-5b97bcaaeac0?q=80&w=1588&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; // Tobacco
       case 'nuts':
         return 'https://images.unsplash.com/photo-1600189020840-e9918c25269d?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bnV0c3xlbnwwfHwwfHx8MA%3D%3D'; // Nuts
-      case 'other': // Added 'other' case explicitly
+      case 'other':
         return 'https://plus.unsplash.com/premium_photo-1661337223133-a92f4f68d001?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; // Default/Other
       default:
         return 'https://images.unsplash.com/photo-1482938289607-e9573fc25ebb'; // Default fallback
@@ -34,32 +34,39 @@ const TypePage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95">
       <Navbar />
 
-      <main className="flex-1 flex flex-col justify-center items-center p-6 overflow-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-7xl w-full">
-          {Array.isArray(flavorCategories) && flavorCategories.map((category) => (
-            <Link
-              key={category}
-              to={type ? `/type/${type}/category/${category}` : '#'}
-              className="overflow-hidden rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:-translate-y-1 block"
-            >
-              <div
-                className="h-48 sm:h-56 relative group bg-gray-200"
-                style={{
-                  backgroundImage: `url(${getCategoryImage(category)})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
-                }}
+      <main className="flex-1 p-6 md:p-8">
+        <div className="container mx-auto max-w-6xl">
+          <h1 className="text-3xl font-bold mb-8 text-center">
+            Select a Category
+          </h1>
+          
+          {/* Specifically using a 3-column grid for categories */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            {Array.isArray(flavorCategories) && flavorCategories.map((category) => (
+              <Link
+                key={category}
+                to={type ? `/type/${type}/category/${category}` : '#'}
+                className="overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 border border-gray-200 group block"
               >
-                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-primary group-hover:bg-opacity-60 transition-opacity duration-200"></div>
-                <div className="relative z-10 flex items-center justify-center h-full">
-                  <h2 className="text-2xl font-bold text-white text-center px-2 drop-shadow-md">{category}</h2>
+                <div
+                  className="h-44 relative bg-gray-200"
+                  style={{
+                    backgroundImage: `url(${getCategoryImage(category)})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}
+                >
+                  <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-primary group-hover:bg-opacity-50 transition-all duration-300"></div>
+                  <div className="relative z-10 flex items-center justify-center h-full">
+                    <h2 className="text-2xl font-bold text-white text-center px-4 drop-shadow-md group-hover:scale-105 transition-transform duration-300">{category}</h2>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
       </main>
 

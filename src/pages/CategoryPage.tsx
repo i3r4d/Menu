@@ -1,12 +1,10 @@
+
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import FlavorGrid from '@/components/FlavorGrid';
 import BackButton from '@/components/BackButton';
-// --- CORRECTED IMPORT ---
-// Removed Firebase import reference
-// Import the specific function needed from your Supabase service file
-import { getFlavorsByCategory } from '@/services/supabase.ts'; // Corrected path
+import { getFlavorsByCategory } from '@/services/supabase.ts';
 import { Flavor } from '@/types/flavor';
 
 const CategoryPage = () => {
@@ -17,36 +15,21 @@ const CategoryPage = () => {
 
   useEffect(() => {
     const fetchFlavors = async () => {
-      // Ensure type and category params are present before fetching
-      // Use default values or handle potentially undefined params gracefully
-      const currentType = type || 'e-liquid'; // Example default, adjust if needed
-      const currentCategory = category || 'all'; // Example default, adjust if needed
+      const currentType = type || 'e-liquid';
+      const currentCategory = category || 'all';
 
-      // Check if original params were undefined if strict handling is needed
       if (!type || !category) {
-         // Decide how to handle: error, redirect, or use defaults?
-         // Using defaults as shown above is one option.
-         // Setting an error might be better if the URL structure guarantees params.
          console.warn("Category type or name missing in URL parameters, using defaults.");
-         // setError('Invalid category parameters.');
-         // setLoading(false);
-         // return; // Stop execution if params are missing and defaults aren't used
       }
-
 
       try {
         setLoading(true);
-        setError(null); // Reset error on new fetch
+        setError(null);
 
-        // --- CALLING THE IMPORTED SUPABASE FUNCTION ---
-        // Use the potentially defaulted variables
         const data = await getFlavorsByCategory(currentType, currentCategory);
-
         setFlavors(data);
       } catch (err) {
-        // Log the actual error for better debugging
         if (err instanceof Error) {
-          // Use the potentially defaulted variables in the error message
           console.error(`Error fetching flavors for ${currentType} - ${currentCategory}:`, err.message);
           setError(`Failed to load flavors: ${err.message}`);
         } else {
@@ -58,38 +41,38 @@ const CategoryPage = () => {
       }
     };
     fetchFlavors();
-  }, [type, category]); // Dependencies for useEffect still use original params
+  }, [type, category]);
 
-  // Use the type variable (which might be undefined initially) for the prop
-  // but ensure it has a valid string value before passing, or handle potential undefined in FlavorGrid
-  const displayType = type || 'e-liquid'; // Use the same default or logic as fetch
+  // Ensure a valid currentCategoryType for the FlavorGrid
+  const currentCategoryType = type === 'Salt-Nic' ? 'Salt Nic' : 'E-Liquid';
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95">
       <Navbar />
 
-      {/* Main content area uses flex-1 to grow and flex/col for centering child */}
-      <main className="flex-1 flex flex-col p-4 overflow-auto">
-        {/* Wrapper uses my-auto for vertical centering within the flex-col parent */}
-        {/* items-center centers content horizontally */}
+      <main className="flex-1 flex flex-col p-6 overflow-auto">
         <div className="my-auto flex flex-col items-center w-full">
           {loading ? (
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary border-r-2"></div>
+            <div className="flex flex-col items-center justify-center h-60">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary border-r-2 mb-4"></div>
+              <p className="text-muted-foreground">Loading flavors...</p>
+            </div>
           ) : error ? (
-            <p className="text-destructive text-center">{error}</p>
+            <div className="p-8 bg-destructive/10 rounded-xl max-w-xl mx-auto text-center">
+              <p className="text-destructive font-medium">{error}</p>
+            </div>
           ) : flavors.length > 0 ? (
-            // Ensure FlavorGrid takes appropriate width, e.g., max-w-5xl w-full
             <div className="w-full max-w-5xl">
               <FlavorGrid
                 flavors={flavors}
-                // --- CHANGE MADE HERE ---
-                // Pass the 'type' parameter from the URL down to FlavorGrid
-                currentCategoryType={displayType}
-                // --- END OF CHANGE ---
+                currentCategoryType={currentCategoryType as 'E-Liquid' | 'Salt Nic'}
+                title={`${category} ${currentCategoryType}`}
               />
             </div>
           ) : (
-            <p className="text-muted-foreground">No flavors found in this category.</p>
+            <div className="text-center p-12 bg-background/50 border border-dashed border-primary/20 rounded-xl max-w-xl">
+              <p className="text-xl text-muted-foreground">No flavors found in this category.</p>
+            </div>
           )}
         </div>
       </main>

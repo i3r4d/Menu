@@ -1,8 +1,8 @@
+
 import { useState, useEffect } from 'react';
 import { SlidersHorizontal, ChevronDown } from 'lucide-react';
-import FlavorCard from './FlavorCard'; // Ensure FlavorCard accepts currentCategoryType
+import FlavorCard from './FlavorCard';
 import { Button } from '@/components/ui/button';
-// Make sure Flavor and FilterOptions types are updated in '@/types/flavor'
 import { Flavor, FilterOptions } from '@/types/flavor';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Slider } from '@/components/ui/slider';
@@ -17,34 +17,29 @@ import {
 
 interface FlavorGridProps {
   flavors: Flavor[];
-  // --- TYPE UPDATED FOR ROBUSTNESS ---
-  // Allow string generally, but expect 'E-Liquid' or 'Salt Nic'
-  currentCategoryType: string;
-  // --- END OF TYPE UPDATE ---
+  currentCategoryType?: 'E-Liquid' | 'Salt Nic';
   title?: string;
 }
 
 // Helper to get min price from variants, returning Infinity if no variants/prices
-const getMinPrice = (variants: Flavor['variants']): number => {
+const getMinPrice = (variants: Flavor['variants'], currentCategoryType?: string): number => {
     if (!variants || variants.length === 0) return Infinity;
-    // Filter variants by the currentCategoryType BEFORE finding min price
-    // This ensures sorting uses the relevant price for the view
-    const relevantVariants = variants.filter(v => v.type === currentCategoryType); // Assuming currentCategoryType is passed down
-    if (relevantVariants.length === 0) return Infinity; // Or handle case where no variant matches type
+    // Filter variants by the currentCategoryType BEFORE finding min price if type is provided
+    const relevantVariants = currentCategoryType 
+      ? variants.filter(v => v.type === currentCategoryType)
+      : variants;
+    if (relevantVariants.length === 0) return Infinity;
     return Math.min(...relevantVariants.map(v => v.price ?? Infinity));
 };
+
 // Helper to get max price from variants, returning 0 if no variants/prices
 const getMaxPrice = (variants: Flavor['variants']): number => {
     if (!variants || variants.length === 0) return 0;
-    // Consider filtering by type here as well if max price should be context-specific
-    // For the overall filter range, using the absolute max across all variants is usually fine.
-    return Math.max(0, ...variants.map(v => v.price ?? 0)); // Ensure price is treated as 0 if null/undefined
+    return Math.max(0, ...variants.map(v => v.price ?? 0));
 };
 
-
-const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) => {
-  // --- Calculate available filter options based on the NEW 'variants' structure ---
-  // Filter options should probably be based on ALL variants, not just the currentCategoryType
+const FlavorGrid = ({ flavors, currentCategoryType = 'E-Liquid', title }: FlavorGridProps) => {
+  // Calculate available filter options based on the variants structure
   const availableBottleSizes = Array.from(new Set(
       flavors.flatMap(f => f.variants?.map(v => v.size) ?? [])
   )).sort();
@@ -52,9 +47,9 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
       flavors.flatMap(f => f.variants?.flatMap(v => v.nicLevels) ?? [])
   )).filter(level => typeof level === 'number').sort((a, b) => a - b);
   const availableVgPgRatios = Array.from(new Set(
-      flavors.map(f => f.vgPgRatio).filter(Boolean) // Assumes vgPgRatio is still top-level
+      flavors.map(f => f.vgPgRatio).filter(Boolean)
   )).sort();
-  const overallMaxPrice = Math.max(1, ...flavors.map(f => getMaxPrice(f.variants))); // Ensure max is at least 1 for slider
+  const overallMaxPrice = Math.max(1, ...flavors.map(f => getMaxPrice(f.variants)));
 
   const [filteredFlavors, setFilteredFlavors] = useState<Flavor[]>(flavors);
   const [sortOrder, setSortOrder] = useState<string>('name-asc');
@@ -67,9 +62,9 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
     };
   });
 
-  // --- Apply filters and sort based on NEW 'variants' structure ---
+  // Apply filters and sort
   const applyFiltersAndSort = () => {
-    let result = [...flavors]; // Start from the original full list
+    let result = [...flavors];
 
     // Filter logic checking inside variants array
     if (filterOptions.bottleSizes.length > 0) {
@@ -86,43 +81,40 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
     }
      if (Array.isArray(filterOptions.priceRange) && filterOptions.priceRange.length === 2) {
         result = result.filter(flavor =>
-            // Check if *any* variant's price falls within the range
             flavor.variants?.some(variant =>
                 (variant.price ?? Infinity) >= filterOptions.priceRange[0] &&
                 (variant.price ?? -Infinity) <= filterOptions.priceRange[1]
             )
         );
     }
-    // VG/PG ratio filter remains the same (assuming it's still a top-level field)
+    // VG/PG ratio filter
     if (filterOptions.vgPgRatios.length > 0) {
       result = result.filter(flavor =>
         flavor.vgPgRatio && filterOptions.vgPgRatios.includes(flavor.vgPgRatio)
       );
     }
 
-    // Sort logic - Adjusted price sort to use helper which considers currentCategoryType
+    // Sort logic - using helper which considers currentCategoryType
     if (sortOrder === 'name-asc') {
       result.sort((a, b) => (a.flavorName || '').localeCompare(b.flavorName || ''));
     } else if (sortOrder === 'name-desc') {
       result.sort((a, b) => (b.flavorName || '').localeCompare(a.flavorName || ''));
     } else if (sortOrder === 'price-asc') {
-      // Sort by minimum price FOUND IN VARIANTS MATCHING THE CURRENT CATEGORY TYPE
-      result.sort((a, b) => getMinPrice(a.variants) - getMinPrice(b.variants));
+      result.sort((a, b) => getMinPrice(a.variants, currentCategoryType) - getMinPrice(b.variants, currentCategoryType));
     } else if (sortOrder === 'price-desc') {
-       // Sort by minimum price FOUND IN VARIANTS MATCHING THE CURRENT CATEGORY TYPE (desc)
-      result.sort((a, b) => getMinPrice(b.variants) - getMinPrice(a.variants));
+      result.sort((a, b) => getMinPrice(b.variants, currentCategoryType) - getMinPrice(a.variants, currentCategoryType));
     } else if (sortOrder === 'newest') {
       result.sort((a, b) => {
         const dateA = a.dateAdded ? new Date(a.dateAdded).getTime() : 0;
         const dateB = b.dateAdded ? new Date(b.dateAdded).getTime() : 0;
-        return dateB - dateA; // Newest first
+        return dateB - dateA;
       });
     }
 
     setFilteredFlavors(result);
   };
 
-  // Update filter state (remains the same logic)
+  // Update filter state
   const updateFilter = (key: keyof FilterOptions, value: any) => {
     setFilterOptions(prev => ({
       ...prev,
@@ -130,7 +122,7 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
     }));
   };
 
-  // Reset filters (uses recalculated overallMaxPrice)
+  // Reset filters
   const resetFilters = () => {
     setFilterOptions({
       bottleSizes: [],
@@ -144,95 +136,54 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
     setSortOrder(order);
   };
 
-  // Apply filters/sort when options, sort order, or initial flavors change
+  // Apply filters/sort when options or flavors change
   useEffect(() => {
-    // Pass currentCategoryType to the sort helper within the effect
-    // Re-defining helpers inside useEffect or passing type if they are defined outside
-    const getMinPriceForSort = (variants: Flavor['variants']): number => {
-        if (!variants || variants.length === 0) return Infinity;
-        const relevantVariants = variants.filter(v => v.type === currentCategoryType);
-        if (relevantVariants.length === 0) return Infinity;
-        return Math.min(...relevantVariants.map(v => v.price ?? Infinity));
-    };
-
-    let sortedResult = [...filteredFlavors]; // Start from already filtered list for sorting part
-
-    if (sortOrder === 'name-asc') {
-      sortedResult.sort((a, b) => (a.flavorName || '').localeCompare(b.flavorName || ''));
-    } else if (sortOrder === 'name-desc') {
-      sortedResult.sort((a, b) => (b.flavorName || '').localeCompare(a.flavorName || ''));
-    } else if (sortOrder === 'price-asc') {
-      sortedResult.sort((a, b) => getMinPriceForSort(a.variants) - getMinPriceForSort(b.variants));
-    } else if (sortOrder === 'price-desc') {
-      sortedResult.sort((a, b) => getMinPriceForSort(b.variants) - getMinPriceForSort(a.variants));
-    } else if (sortOrder === 'newest') {
-      sortedResult.sort((a, b) => {
-        const dateA = a.dateAdded ? new Date(a.dateAdded).getTime() : 0;
-        const dateB = b.dateAdded ? new Date(b.dateAdded).getTime() : 0;
-        return dateB - dateA;
-      });
-    }
-    setFilteredFlavors(sortedResult);
-
-  // Apply filters whenever filterOptions change
-  // Need separate effect for filtering based on original flavors
+    applyFiltersAndSort();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterOptions, flavors]); // Filter runs when options or base flavors change
+  }, [filterOptions, flavors, sortOrder, currentCategoryType]);
 
+  // Update price range if flavors change
   useEffect(() => {
-     // Apply sorting whenever sortOrder or the *result* of filtering changes
-     applyFiltersAndSort(); // Rerun the whole process might be simpler here
-     // If performance becomes an issue, separate filtering and sorting effects more carefully
+    const newOverallMaxPrice = Math.max(1, ...flavors.map(f => getMaxPrice(f.variants)));
+    setFilterOptions(prev => {
+        const newMax = newOverallMaxPrice;
+        const currentMax = prev.priceRange[1];
+        if (newMax !== currentMax || prev.priceRange[0] > newMax) {
+            return {
+                ...prev,
+                priceRange: [prev.priceRange[0] > newMax ? 0 : prev.priceRange[0], newMax]
+            };
+        }
+        return prev;
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortOrder, currentCategoryType]); // Re-sort if sortOrder or the context TYPE changes
-
-
-    // Update initial filter price range if flavors prop changes
-    useEffect(() => {
-        const newOverallMaxPrice = Math.max(1, ...flavors.map(f => getMaxPrice(f.variants)));
-        // Check if filterOptions needs update BEFORE setting it, avoid infinite loop if possible
-        setFilterOptions(prev => {
-            const newMax = newOverallMaxPrice;
-            const currentMax = prev.priceRange[1];
-            // Only update if the max price actually changed significantly
-            // or if the lower bound is now invalid
-            if (newMax !== currentMax || prev.priceRange[0] > newMax) {
-                return {
-                    ...prev,
-                     // Reset lower bound if it's higher than the new max
-                    priceRange: [prev.priceRange[0] > newMax ? 0 : prev.priceRange[0], newMax]
-                };
-            }
-            return prev; // No change needed
-        });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [flavors]); // Rerun only when the base flavors list changes
+  }, [flavors]);
 
   return (
     <div className="container mx-auto px-4 w-full max-w-6xl">
       {/* Optional Title */}
-      {title && <h2 className="text-2xl font-bold mb-4">{title}</h2>}
+      {title && <h2 className="text-3xl font-semibold mb-8 text-center">{title}</h2>}
 
       {/* Filter/Sort Controls Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4 sticky top-[60px] sm:top-[72px] bg-background py-2 z-10 border-b"> {/* Adjust top value based on navbar height */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sticky top-[140px] sm:top-[140px] bg-background/80 backdrop-blur-sm py-4 z-10 border-b rounded-md"> 
         <div className="flex items-center gap-2">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <Button variant="outline" size="sm" className="flex items-center gap-1 font-medium">
                 <SlidersHorizontal size={16} />
                 <span>Filter</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left">
+            <SheetContent side="left" className="border-r border-primary/10">
               <SheetHeader>
-                <SheetTitle>Filter Options</SheetTitle>
+                <SheetTitle className="text-2xl font-semibold">Filter Options</SheetTitle>
               </SheetHeader>
-              <div className="py-4 space-y-6 overflow-y-auto h-[calc(100vh-100px)]">
+              <div className="py-6 space-y-8 overflow-y-auto h-[calc(100vh-120px)]">
                 {/* Bottle Sizes Filter UI */}
                 {availableBottleSizes.length > 0 && (
                     <div>
-                    <h3 className="font-medium mb-2">Bottle Sizes</h3>
-                    <div className="grid grid-cols-2 gap-2">
+                    <h3 className="font-semibold mb-3 text-lg">Bottle Sizes</h3>
+                    <div className="grid grid-cols-2 gap-3">
                         {availableBottleSizes.map((size) => (
                         <div key={`filter-size-${size}`} className="flex items-center space-x-2">
                             <Checkbox
@@ -247,7 +198,7 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
                                 );
                             }}
                             />
-                            <Label htmlFor={`filter-size-${size}`}>{size}</Label>
+                            <Label htmlFor={`filter-size-${size}`} className="font-medium">{size}</Label>
                         </div>
                         ))}
                     </div>
@@ -257,8 +208,8 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
                  {/* Nicotine Levels Filter UI */}
                 {availableNicLevels.length > 0 && (
                     <div>
-                    <h3 className="font-medium mb-2">Nicotine Levels</h3>
-                    <div className="grid grid-cols-2 gap-2">
+                    <h3 className="font-semibold mb-3 text-lg">Nicotine Levels</h3>
+                    <div className="grid grid-cols-2 gap-3">
                         {availableNicLevels.map((level) => (
                         <div key={`filter-nic-${level}`} className="flex items-center space-x-2">
                             <Checkbox
@@ -273,7 +224,7 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
                                 );
                             }}
                             />
-                            <Label htmlFor={`filter-nic-${level}`}>{level}mg</Label>
+                            <Label htmlFor={`filter-nic-${level}`} className="font-medium">{level}mg</Label>
                         </div>
                         ))}
                     </div>
@@ -283,9 +234,9 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
                 {/* Price Range Filter UI */}
                 {overallMaxPrice > 0 && (
                     <div>
-                    <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-medium">Price Range</h3>
-                        <span className="text-sm">
+                    <div className="flex justify-between items-center mb-3">
+                        <h3 className="font-semibold text-lg">Price Range</h3>
+                        <span className="text-sm font-medium bg-primary/10 px-3 py-1 rounded-full">
                         ${filterOptions.priceRange[0]} - ${filterOptions.priceRange[1]}
                         </span>
                     </div>
@@ -295,17 +246,16 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
                         step={1}
                         value={filterOptions.priceRange}
                         onValueChange={(value) => updateFilter('priceRange', value)}
-                        className="mt-2"
+                        className="mt-4"
                     />
                     </div>
                 )}
 
-
                 {/* VG/PG Ratio Filter UI */}
                  {availableVgPgRatios.length > 0 && (
                     <div>
-                    <h3 className="font-medium mb-2">VG/PG Ratio</h3>
-                    <div className="grid grid-cols-2 gap-2">
+                    <h3 className="font-semibold mb-3 text-lg">VG/PG Ratio</h3>
+                    <div className="grid grid-cols-2 gap-3">
                         {availableVgPgRatios.map((ratio) => (
                         <div key={`filter-ratio-${ratio}`} className="flex items-center space-x-2">
                             <Checkbox
@@ -320,7 +270,7 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
                                 );
                             }}
                             />
-                            <Label htmlFor={`filter-ratio-${ratio}`}>{ratio}</Label>
+                            <Label htmlFor={`filter-ratio-${ratio}`} className="font-medium">{ratio}</Label>
                         </div>
                         ))}
                     </div>
@@ -328,11 +278,10 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
                  )}
 
                 {/* Action Buttons */}
-                <div className="flex justify-between pt-4 border-t">
-                  <Button variant="outline" onClick={resetFilters}>
+                <div className="flex justify-between pt-4 border-t mt-8">
+                  <Button variant="outline" onClick={resetFilters} className="font-medium">
                     Reset Filters
                   </Button>
-                  {/* Apply button removed if filters apply on change */}
                 </div>
               </div>
             </SheetContent>
@@ -341,49 +290,45 @@ const FlavorGrid = ({ flavors, currentCategoryType, title }: FlavorGridProps) =>
           {/* Sort Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <Button variant="outline" size="sm" className="flex items-center gap-1 font-medium">
                 <span>Sort</span>
                 <ChevronDown size={16} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => handleSortChange('name-asc')}>Name (A-Z)</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange('name-desc')}>Name (Z-A)</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange('price-asc')}>Price (Low-High)</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange('price-desc')}>Price (High-Low)</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange('newest')}>Newest Added</DropdownMenuItem>
+            <DropdownMenuContent className="bg-background/95 backdrop-blur-sm border border-primary/10 rounded-xl shadow-lg p-2">
+              <DropdownMenuItem onClick={() => handleSortChange('name-asc')} className="cursor-pointer rounded-md mb-1">Name (A-Z)</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleSortChange('name-desc')} className="cursor-pointer rounded-md mb-1">Name (Z-A)</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleSortChange('price-asc')} className="cursor-pointer rounded-md mb-1">Price (Low-High)</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleSortChange('price-desc')} className="cursor-pointer rounded-md mb-1">Price (High-Low)</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleSortChange('newest')} className="cursor-pointer rounded-md">Newest Added</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
         {/* Flavor count */}
-        <div className="text-sm text-muted-foreground text-right">
+        <div className="text-sm text-muted-foreground font-medium px-3 py-1 bg-background/50 border rounded-full">
           {filteredFlavors.length} flavor{filteredFlavors.length !== 1 ? 's' : ''} found
         </div>
       </div>
 
       {/* Flavor Cards Grid Section */}
       {filteredFlavors.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {/* Map over filtered flavors */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredFlavors.map((flavor) => (
-            // --- CHANGE MADE HERE ---
             <FlavorCard
-              key={flavor.id} // Ensure unique key is present
+              key={flavor.id}
               flavor={flavor}
-              currentCategoryType={currentCategoryType} // Pass the context down
+              currentCategoryType={currentCategoryType}
             />
-            // --- END OF CHANGE ---
           ))}
         </div>
       ) : (
-        // No results message
-        <div className="flex flex-col items-center justify-center text-center mt-10">
-          <p className="text-lg text-muted-foreground">No flavors found matching your criteria</p>
+        <div className="flex flex-col items-center justify-center text-center mt-16 py-12 px-6 bg-background/50 border border-dashed border-primary/20 rounded-xl">
+          <p className="text-lg text-muted-foreground mb-4">No flavors found matching your criteria</p>
           <Button
-            variant="link"
+            variant="outline"
             onClick={resetFilters}
-            className="mt-2"
+            className="mt-2 font-medium"
           >
             Clear Filters
           </Button>

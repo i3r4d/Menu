@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import FlavorGrid from '@/components/FlavorGrid';
@@ -65,25 +66,29 @@ const DealsPage = () => {
   }, []); // Empty dependency array means this runs once on mount
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95">
       <Navbar />
 
       {/* Main content area */}
-      <main className="flex-1 flex flex-col p-4 overflow-auto">
+      <main className="flex-1 flex flex-col p-6 overflow-auto">
         <div className="my-auto flex flex-col items-center w-full">
           {loading ? (
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary border-r-2"></div>
+            <div className="flex flex-col items-center justify-center h-60">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary border-r-2 mb-4"></div>
+              <p className="text-muted-foreground">Loading deals...</p>
+            </div>
           ) : error ? (
-            <p className="text-destructive text-center">{error}</p>
+            <div className="p-8 bg-destructive/10 rounded-xl max-w-xl mx-auto text-center">
+              <p className="text-destructive font-medium">{error}</p>
+            </div>
           ) : (
             <div className="w-full max-w-5xl">
-              {/* Deals Header Box - REMOVED background, padding, rounded corners */}
-              <div className="text-center mb-8">
-                <h1 className="text-2xl font-bold mb-2">Line of the Month</h1>
-                {/* REMOVED conditional text block for manufacturer/discount */}
+              {/* Deals Header Box */}
+              <div className="text-center mb-12">
+                <h1 className="text-4xl font-bold mb-3">Line of the Month</h1>
                 {/* Display this message only if loading is false AND no manufacturer is set */}
                 {!lineOfMonthManufacturer && !loading && (
-                   <p className="text-muted-foreground">No Line of the Month currently selected.</p>
+                   <p className="text-muted-foreground text-lg">No Line of the Month currently selected.</p>
                 )}
               </div>
 
@@ -91,12 +96,15 @@ const DealsPage = () => {
               {lineOfMonthManufacturer && flavors.length > 0 ? (
                 <FlavorGrid
                   flavors={flavors}
+                  currentCategoryType="E-Liquid"
                 />
               ) : lineOfMonthManufacturer && flavors.length === 0 && !loading ? (
                  // Handles case where LOTM is set, but no flavors were found
-                <p className="text-center text-muted-foreground py-8">
-                  No flavors found for the selected Line of the Month ({lineOfMonthManufacturer}).
-                </p>
+                <div className="text-center p-12 bg-background/50 border border-dashed border-primary/20 rounded-xl">
+                  <p className="text-lg text-muted-foreground">
+                    No flavors found for the selected Line of the Month ({lineOfMonthManufacturer}).
+                  </p>
+                </div>
               ) : null /* Don't show grid if no LOTM is set (message handled above) */ }
             </div>
           )}
