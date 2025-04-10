@@ -1,24 +1,25 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout'; // Adjust path if necessary
+import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-// Removed Switch import
+import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"; // Import Select components
+} from "@/components/ui/select";
 import { useToast } from '@/components/ui/use-toast';
-// Import necessary functions from Supabase service (using camelCase convention)
-import { getSettings, updateSettings, getUniqueManufacturers, SettingsData } from '@/services/supabase.ts'; // Adjust path
-// Removed useTheme import
+import { getSettings, updateSettings, getUniqueManufacturers, SettingsData } from '@/services/supabase.ts';
+import { useTheme } from '@/contexts/ThemeContext';
+import { Moon, Sun } from 'lucide-react';
 
 const AdminSettings = () => {
   const { toast } = useToast();
-  // Removed theme state from useTheme
+  const { theme, toggleTheme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -79,8 +80,6 @@ const AdminSettings = () => {
   const handleLineChange = (value: string) => {
     setSettings(prev => ({ ...prev, lineOfTheMonth: value === 'None' ? null : value }));
   };
-
-  // Removed handleThemeChange function
 
   // Handle saving all settings
   const handleSave = async (e?: React.FormEvent) => {
@@ -168,10 +167,28 @@ const AdminSettings = () => {
                </p>
             </div>
 
-            {/* REMOVED Dark Mode Toggle Section */}
+            {/* Dark Mode Toggle */}
+            <div className="space-y-2 pt-2 border-t">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="dark-mode" className="text-base">Dark Mode</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Toggle between light and dark theme.
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Sun className="h-4 w-4 text-muted-foreground" />
+                  <Switch 
+                    id="dark-mode" 
+                    checked={theme === 'dark'}
+                    onCheckedChange={toggleTheme}
+                  />
+                  <Moon className="h-4 w-4 text-muted-foreground" />
+                </div>
+              </div>
+            </div>
 
             {/* Save Button */}
-            {/* Adjusted spacing */}
             <div className="flex justify-end pt-6 border-t mt-6">
               <Button onClick={() => handleSave()} disabled={saving || loading}>
                 {saving ? 'Saving...' : 'Save Settings'}

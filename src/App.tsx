@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { FavoritesProvider } from "./contexts/FavoritesContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 // Pages
 import Index from "./pages/Index";
@@ -29,34 +30,36 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <FavoritesProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/type/:type" element={<TypePage />} />
-            <Route path="/type/:type/category/:category" element={<CategoryPage />} />
-            <Route path="/flavor/:id" element={<FlavorDetailPage />} />
-            <Route path="/new" element={<NewFlavorsPage />} />
-            <Route path="/deals" element={<DealsPage />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/favorites" element={<FavoritesPage />} />
-            
-            {/* Admin Routes */}
-            <Route path="/admin-portal" element={<AdminLoginPage />} />
-            <Route path="/admin-portal/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin-portal/flavors/add" element={<AdminFlavorForm />} />
-            <Route path="/admin-portal/flavors/edit/:id" element={<AdminFlavorForm />} />
-            <Route path="/admin-portal/line-of-month" element={<AdminLineOfMonth />} />
-            <Route path="/admin-portal/settings" element={<AdminSettings />} />
-            
-            {/* Catch-all Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </FavoritesProvider>
+      <ThemeProvider>
+        <FavoritesProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/type/:type" element={<TypePage />} />
+              <Route path="/type/:type/category/:category" element={<CategoryPage />} />
+              <Route path="/flavor/:id" element={<FlavorDetailPage />} />
+              <Route path="/new" element={<NewFlavorsPage />} />
+              <Route path="/deals" element={<DealsPage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/favorites" element={<FavoritesPage />} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin-portal" element={<AdminLoginPage />} />
+              <Route path="/admin-portal/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin-portal/flavors/add" element={<AdminFlavorForm />} />
+              <Route path="/admin-portal/flavors/edit/:id" element={<AdminFlavorForm />} />
+              <Route path="/admin-portal/line-of-month" element={<AdminLineOfMonth />} />
+              <Route path="/admin-portal/settings" element={<AdminSettings />} />
+              
+              {/* Catch-all Route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </FavoritesProvider>
+      </ThemeProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

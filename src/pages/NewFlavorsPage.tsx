@@ -36,25 +36,25 @@ const NewFlavorsPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95 dark:from-gray-900 dark:to-gray-800">
       <Navbar />
 
-      <main className="flex-1 flex flex-col p-6 overflow-auto">
+      <main className="flex-1 flex flex-col p-6 pt-8 overflow-auto">
         <div className="my-auto flex flex-col items-center w-full">
           {loading ? (
             <div className="flex flex-col items-center justify-center h-60">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary border-r-2 mb-4"></div>
-              <p className="text-muted-foreground">Loading new flavors...</p>
+              <p className="text-muted-foreground dark:text-gray-400">Loading new flavors...</p>
             </div>
           ) : error ? (
-            <div className="p-8 bg-destructive/10 rounded-xl max-w-xl mx-auto text-center">
-              <p className="text-destructive font-medium">{error}</p>
+            <div className="p-8 bg-destructive/10 dark:bg-destructive/20 rounded-xl max-w-xl mx-auto text-center">
+              <p className="text-destructive dark:text-red-400 font-medium">{error}</p>
             </div>
           ) : flavors.length === 0 ? (
             <div className="text-center py-16 max-w-xl">
-              <h1 className="text-3xl font-bold mb-4">New Flavors</h1>
-              <div className="p-12 bg-background/50 border border-dashed border-primary/20 rounded-xl">
-                <p className="text-xl text-muted-foreground">No recent flavors added.</p>
+              <h1 className="text-3xl font-bold mb-4 dark:text-white">New Flavors</h1>
+              <div className="p-12 bg-background/50 dark:bg-gray-800/50 border border-dashed border-primary/20 dark:border-primary/10 rounded-xl">
+                <p className="text-xl text-muted-foreground dark:text-gray-400">No recent flavors added.</p>
               </div>
             </div>
           ) : (

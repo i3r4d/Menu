@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Search, Heart, Menu, X } from 'lucide-react';
+import { Search, Heart, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { getLogoURL } from '@/services/supabase';
@@ -42,13 +42,13 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { name: "Flavors", path: "/" },
+    { name: "Home", path: "/" },
     { name: "New", path: "/new" },
     { name: "Deals", path: "/deals" }
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm px-4 sm:px-6 py-4">
+    <nav className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-sm px-4 sm:px-6 py-4">
       {/* Desktop Navbar */}
       <div className="container mx-auto">
         <div className="flex items-center justify-between gap-4">
@@ -77,7 +77,7 @@ const Navbar = () => {
                 key={item.path}
                 variant="ghost" 
                 onClick={() => navigate(item.path)}
-                className="text-base font-bold hover:bg-primary hover:text-white transition-colors"
+                className="text-lg font-bold hover:bg-primary hover:text-white transition-colors"
               >
                 {item.name}
               </Button>
@@ -93,11 +93,11 @@ const Navbar = () => {
                 placeholder="Search flavors..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-[200px] lg:w-[300px] h-10 pl-4 pr-10 rounded-full border border-gray-300 shadow-sm focus-visible:ring-primary"
+                className="w-full sm:w-[200px] lg:w-[300px] h-10 pl-4 pr-10 rounded-full border border-gray-300 dark:border-gray-700 shadow-sm focus-visible:ring-primary"
               />
               <button 
                 type="submit" 
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-primary"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-primary"
               >
                 <Search size={18} />
               </button>
@@ -125,7 +125,7 @@ const Navbar = () => {
                   <Menu size={24} />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[80vw] sm:w-[350px] pt-12">
+              <SheetContent side="right" className="w-[80vw] sm:w-[350px] pt-12 dark:bg-gray-900 dark:text-gray-100">
                 <div className="flex flex-col h-full">
                   {/* Mobile Search */}
                   <form onSubmit={handleSearch} className="mb-6">
@@ -135,11 +135,11 @@ const Navbar = () => {
                         placeholder="Search flavors..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full h-12 pl-4 pr-10 rounded-lg border border-gray-300"
+                        className="w-full h-12 pl-4 pr-10 rounded-lg border border-gray-300 dark:border-gray-700"
                       />
                       <button 
                         type="submit" 
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400"
                       >
                         <Search size={18} />
                       </button>

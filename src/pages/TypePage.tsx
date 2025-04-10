@@ -34,12 +34,12 @@ const TypePage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95 dark:from-gray-900 dark:to-gray-800">
       <Navbar />
 
-      <main className="flex-1 p-6 md:p-8">
+      <main className="flex-1 p-6 md:p-8 pt-8">
         <div className="container mx-auto max-w-6xl">
-          <h1 className="text-3xl font-bold mb-8 text-center">
+          <h1 className="text-3xl font-bold mb-8 text-center dark:text-white">
             Select a Category
           </h1>
           
@@ -49,10 +49,10 @@ const TypePage = () => {
               <Link
                 key={category}
                 to={type ? `/type/${type}/category/${category}` : '#'}
-                className="overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 border border-gray-200 group block"
+                className="overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 border border-gray-200 dark:border-gray-700 group block"
               >
                 <div
-                  className="h-44 relative bg-gray-200"
+                  className="h-44 relative bg-gray-200 dark:bg-gray-800"
                   style={{
                     backgroundImage: `url(${getCategoryImage(category)})`,
                     backgroundSize: 'cover',

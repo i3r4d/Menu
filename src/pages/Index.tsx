@@ -14,15 +14,15 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#fcfcfc] to-[#f7f7f7]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95 dark:from-gray-900 dark:to-gray-800">
       <Navbar />
       
       <main className="flex-1 flex flex-col justify-center items-center p-6 md:p-8">
         <div className="container max-w-6xl mx-auto">
           {/* Headline & Description */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-800">Choose Your Flavor Type</h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Select the flavor type you're interested in to see our full collection</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-800 dark:text-gray-100">Browse Our Selection</h1>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Choose between E-Liquid and Salt Nicotine options</p>
           </div>
           
           {/* Type Selection Cards in a 2-column grid */}
@@ -30,7 +30,7 @@ const Index = () => {
             {/* E-Liquid Card */}
             <Link to="/type/E-Liquid">
               <div 
-                className="relative h-80 md:h-96 overflow-hidden rounded-2xl shadow-lg transform transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group"
+                className="relative h-80 md:h-96 overflow-hidden rounded-2xl shadow-lg dark:shadow-gray-900/30"
                 style={{
                   backgroundImage: `url(${getCategoryImage('E-Liquid')})`,
                   backgroundSize: 'cover',
@@ -38,15 +38,11 @@ const Index = () => {
                 }}
               >
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 group-hover:opacity-90 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20"></div>
                 
                 {/* Content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8">
-                  <h2 className="text-4xl md:text-5xl font-bold mb-4 transform transition-transform duration-500 drop-shadow-md">E-Liquid</h2>
-                  <p className="text-lg text-center max-w-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">Browse our selection of traditional e-liquids for your favorite vaping device</p>
-                  <div className="mt-6 bg-white/20 backdrop-blur-sm py-2 px-5 rounded-full font-semibold hover:bg-white/30 transition-all duration-300 opacity-0 group-hover:opacity-100">
-                    Explore
-                  </div>
+                <div className="absolute inset-0 flex items-center justify-center text-white p-8">
+                  <h2 className="text-4xl md:text-5xl font-bold transform drop-shadow-md">E-Liquid</h2>
                 </div>
               </div>
             </Link>
@@ -54,7 +50,7 @@ const Index = () => {
             {/* Salt Nic Card */}
             <Link to="/type/Salt-Nic">
               <div 
-                className="relative h-80 md:h-96 overflow-hidden rounded-2xl shadow-lg transform transition-all duration-500 hover:shadow-xl hover:scale-[1.02] group"
+                className="relative h-80 md:h-96 overflow-hidden rounded-2xl shadow-lg dark:shadow-gray-900/30"
                 style={{
                   backgroundImage: `url(${getCategoryImage('Salt-Nic')})`,
                   backgroundSize: 'cover',
@@ -62,15 +58,11 @@ const Index = () => {
                 }}
               >
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 group-hover:opacity-90 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20"></div>
                 
                 {/* Content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8">
-                  <h2 className="text-4xl md:text-5xl font-bold mb-4 transform transition-transform duration-500 drop-shadow-md">Salt Nic</h2>
-                  <p className="text-lg text-center max-w-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">Discover our collection of nicotine salt formulations for pod systems</p>
-                  <div className="mt-6 bg-white/20 backdrop-blur-sm py-2 px-5 rounded-full font-semibold hover:bg-white/30 transition-all duration-300 opacity-0 group-hover:opacity-100">
-                    Explore
-                  </div>
+                <div className="absolute inset-0 flex items-center justify-center text-white p-8">
+                  <h2 className="text-4xl md:text-5xl font-bold transform drop-shadow-md">Salt Nic</h2>
                 </div>
               </div>
             </Link>
