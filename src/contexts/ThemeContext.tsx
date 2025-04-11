@@ -16,7 +16,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   // Initialize theme from localStorage or system preference
   useEffect(() => {
     // Check localStorage first
-    const savedTheme = localStorage.getItem('kvmenu-theme') as Theme;
+    const savedTheme = localStorage.getItem('theme') as Theme;
     
     if (savedTheme) {
       setTheme(savedTheme);
@@ -37,7 +37,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
     
     // Save to localStorage
-    localStorage.setItem('kvmenu-theme', theme);
+    localStorage.setItem('theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {
