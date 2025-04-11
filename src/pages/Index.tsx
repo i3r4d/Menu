@@ -14,35 +14,40 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95 dark:from-darkBgPrimary dark:to-darkBgSecondary">
       <Navbar />
       
       <main className="flex-1 flex flex-col justify-center items-center p-6 md:p-8">
         <div className="container max-w-6xl mx-auto">
-          {/* Headline & Description */}
+          {/* Headline & Description - Cyborg Style */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-800 dark:text-gray-100">Browse Our Selection</h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Choose between E-Liquid and Salt Nicotine options</p>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-darkTextPrimary">Explore Our Flavors</h1>
+            <p className="text-xl text-gray-600 dark:text-darkTextSecondary max-w-2xl mx-auto">Choose your preferred nicotine delivery method</p>
           </div>
           
           {/* Type Selection Cards in a 2-column grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* E-Liquid Card */}
             <Link to="/type/E-Liquid">
               <div 
-                className="relative h-80 md:h-96 overflow-hidden rounded-2xl shadow-lg dark:shadow-gray-900/30"
+                className="relative h-80 md:h-96 overflow-hidden rounded-xl shadow-lg dark:shadow-black/50 transform transition-transform duration-300 hover:scale-[1.03] hover:shadow-xl dark:hover:shadow-black/70"
                 style={{
                   backgroundImage: `url(${getCategoryImage('E-Liquid')})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center'
                 }}
               >
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20"></div>
+                {/* Overlay - More vibrant for Cyborg style */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30 group-hover:from-primary/80 transition-colors duration-300"></div>
                 
                 {/* Content */}
                 <div className="absolute inset-0 flex items-center justify-center text-white p-8">
-                  <h2 className="text-4xl md:text-5xl font-bold transform drop-shadow-md">E-Liquid</h2>
+                  <div className="text-center">
+                    <h2 className="text-4xl md:text-5xl font-bold transform drop-shadow-md">E-Liquid</h2>
+                    <div className="mt-4 bg-black/30 backdrop-blur-sm px-6 py-3 rounded-lg inline-block">
+                      <p className="text-white/90 text-lg">Traditional vape juice</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Link>
@@ -50,19 +55,24 @@ const Index = () => {
             {/* Salt Nic Card */}
             <Link to="/type/Salt-Nic">
               <div 
-                className="relative h-80 md:h-96 overflow-hidden rounded-2xl shadow-lg dark:shadow-gray-900/30"
+                className="relative h-80 md:h-96 overflow-hidden rounded-xl shadow-lg dark:shadow-black/50 transform transition-transform duration-300 hover:scale-[1.03] hover:shadow-xl dark:hover:shadow-black/70"
                 style={{
                   backgroundImage: `url(${getCategoryImage('Salt-Nic')})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center'
                 }}
               >
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20"></div>
+                {/* Overlay - More vibrant for Cyborg style */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30 group-hover:from-primary/80 transition-colors duration-300"></div>
                 
                 {/* Content */}
                 <div className="absolute inset-0 flex items-center justify-center text-white p-8">
-                  <h2 className="text-4xl md:text-5xl font-bold transform drop-shadow-md">Salt Nic</h2>
+                  <div className="text-center">
+                    <h2 className="text-4xl md:text-5xl font-bold transform drop-shadow-md">Salt Nic</h2>
+                    <div className="mt-4 bg-black/30 backdrop-blur-sm px-6 py-3 rounded-lg inline-block">
+                      <p className="text-white/90 text-lg">Higher nicotine concentration</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Link>

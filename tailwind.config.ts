@@ -26,10 +26,10 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: '#2980b9', // Dark blue
+					DEFAULT: '#9b87f5', // Purple accent
 					foreground: 'hsl(var(--primary-foreground))',
-					light: '#3498db',
-					dark: '#1c638f'
+					light: '#b4a5f8',
+					dark: '#8169f1'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -44,7 +44,7 @@ export default {
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: '#f39c12', // Original orange accent
+					DEFAULT: '#F97316', // Orange accent
 					foreground: 'hsl(var(--accent-foreground))'
 				},
 				popover: {
@@ -55,7 +55,14 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// Earth tones
+				// Cyborg-inspired dark mode colors
+				darkBgPrimary: '#1A1F2C', // Dark purple background
+				darkBgSecondary: '#222222', // Dark charcoal
+				darkSurface: '#333333', // Slightly lighter surface
+				darkBorder: '#403E43', // Charcoal gray for borders
+				darkTextPrimary: '#FFFFFF', // White text
+				darkTextSecondary: '#ABBBC2', // Muted text
+				primaryAccent: '#9b87f5', // Bright purple accent
 				terracotta: {
 					light: '#E6CCBE',
 					DEFAULT: '#D9A78B',

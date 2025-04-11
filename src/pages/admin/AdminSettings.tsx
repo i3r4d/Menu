@@ -1,202 +1,174 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from "sonner";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useToast } from '@/components/ui/use-toast';
-import { getSettings, updateSettings, getUniqueManufacturers, SettingsData } from '@/services/supabase.ts';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Moon, Sun } from 'lucide-react';
+import AdminLayout from '@/components/admin/AdminLayout';
+import { getManufacturers, getSettings, updateSettings } from '@/services/supabase';
+import { Manufacturer, SettingsData } from '@/integrations/supabase/types';
 
 const AdminSettings = () => {
-  const { toast } = useToast();
+  const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [imageError, setImageError] = useState(false);
-  const [manufacturers, setManufacturers] = useState<string[]>(['None']);
-  const [settings, setSettings] = useState<Partial<SettingsData>>({
+  const [settings, setSettings] = useState<SettingsData>({
     logoURL: '',
-    lineOfTheMonth: null,
+    lineOfTheMonth: ''
   });
-
-  // Fetch settings and manufacturers on component mount
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    setImageError(false);
-    try {
-      // Fetch settings using the generic function
-      const fetchedSettings = await getSettings();
-      if (fetchedSettings) {
-        setSettings({
-          logoURL: fetchedSettings.logoURL || '',
-          lineOfTheMonth: fetchedSettings.lineOfTheMonth || null,
-        });
-      } else {
-         setSettings({ logoURL: '', lineOfTheMonth: null });
-      }
-
-      // Fetch manufacturers
-      const fetchedManufacturers = await getUniqueManufacturers();
-      setManufacturers(['None', ...fetchedManufacturers]);
-
-    } catch (error) {
-      console.error("Error loading settings page data:", error);
-      toast({
-        title: 'Error Loading Data',
-        description: error instanceof Error ? error.message : 'Could not load settings or manufacturers.',
-        variant: 'destructive',
-      });
-       setManufacturers(['None']);
-       setSettings({ logoURL: '', lineOfTheMonth: null });
-    } finally {
-      setLoading(false);
-    }
-  }, [toast]);
+  const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    const fetchSettings = async () => {
+      setIsLoading(true);
+      try {
+        const settingsData = await getSettings();
+        if (settingsData) {
+          setSettings(settingsData);
+        }
+        
+        const manufacturersData = await getManufacturers();
+        setManufacturers(manufacturersData);
+      } catch (error) {
+        console.error('Error fetching settings:', error);
+        toast.error('Failed to load settings');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchSettings();
+  }, []);
 
-  // Handle changes for Input fields (like logoURL)
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setSettings(prev => ({ ...prev, [name]: value }));
-     if (name === 'logoURL') {
-        setImageError(false);
-    }
+    setSettings(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  // Handle change for the Line of the Month Select dropdown
-  const handleLineChange = (value: string) => {
-    setSettings(prev => ({ ...prev, lineOfTheMonth: value === 'None' ? null : value }));
+  const handleSelectChange = (value: string) => {
+    setSettings(prev => ({
+      ...prev,
+      lineOfTheMonth: value
+    }));
   };
 
-  // Handle saving all settings
-  const handleSave = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setSaving(true);
+  const handleSave = async () => {
+    setIsSaving(true);
     try {
-      // Prepare data using camelCase keys
-      const dataToSave: Partial<SettingsData> = {
-        logoURL: settings.logoURL?.trim() || null,
-        lineOfTheMonth: settings.lineOfTheMonth, // Already null for 'None' from state logic
-      };
-
-      // Call the generic updateSettings function
-      await updateSettings(dataToSave);
-      toast({ title: 'Success', description: 'Settings updated successfully.' });
+      await updateSettings(settings);
+      toast.success('Settings updated successfully');
+      // Redirect to dashboard or refresh settings
     } catch (error) {
-      console.error("Error saving settings:", error);
-      toast({
-        title: 'Error Saving Settings',
-        description: error instanceof Error ? error.message : 'Could not save settings.',
-        variant: 'destructive',
-      });
+      console.error('Error updating settings:', error);
+      toast.error('Failed to update settings');
     } finally {
-      setSaving(false);
+      setIsSaving(false);
     }
   };
 
   return (
-    <AdminLayout title="Global Settings">
-      <div className="bg-card text-card-foreground rounded-lg shadow p-6 max-w-2xl mx-auto border">
-        {loading ? (
-          <div className="flex justify-center items-center py-10">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary border-r-2"></div>
-          </div>
-        ) : (
+    <AdminLayout title="Settings">
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+        </div>
+      ) : (
+        <div className="bg-white dark:bg-darkSurface rounded-xl shadow-md p-6 max-w-2xl dark:text-darkTextPrimary">
           <div className="space-y-6">
-            {/* Logo URL */}
+            {/* Logo URL Setting */}
             <div className="space-y-2">
-              <Label htmlFor="logoURL">Shop Logo URL</Label>
+              <Label htmlFor="logoURL" className="text-lg font-medium dark:text-darkTextPrimary">Logo URL</Label>
               <Input
                 id="logoURL"
                 name="logoURL"
                 value={settings.logoURL || ''}
                 onChange={handleInputChange}
-                placeholder="https://..."
+                placeholder="Enter logo image URL"
+                className="dark:bg-darkBgPrimary dark:border-darkBorder"
               />
-               {settings.logoURL && (
-                    <div className="mt-2">
-                         <p className="text-sm text-muted-foreground mb-1">Preview:</p>
-                         <div className="h-16 w-auto max-w-[150px] bg-muted p-1 rounded inline-block">
-                            <img
-                                src={imageError ? '/placeholder.svg' : settings.logoURL}
-                                alt="Logo Preview"
-                                className="h-full w-auto object-contain"
-                                onError={() => setImageError(true)}
-                             />
-                        </div>
-                    </div>
-               )}
+              <p className="text-sm text-gray-500 dark:text-darkTextSecondary">
+                Enter a URL for your store logo image
+              </p>
             </div>
-
-            {/* Line of the Month */}
+            
+            {/* Line of the Month Setting */}
             <div className="space-y-2">
-              <Label htmlFor="lineOfTheMonth">Line of the Month</Label>
-              <Select
-                value={settings.lineOfTheMonth === null ? 'None' : settings.lineOfTheMonth}
-                onValueChange={handleLineChange}
+              <Label htmlFor="lineOfTheMonth" className="text-lg font-medium dark:text-darkTextPrimary">Line of the Month</Label>
+              <Select 
+                value={settings.lineOfTheMonth || ''} 
+                onValueChange={handleSelectChange}
               >
-                <SelectTrigger id="lineOfTheMonth">
-                  <SelectValue placeholder="Select Manufacturer..." />
+                <SelectTrigger 
+                  id="lineOfTheMonth"
+                  className="dark:bg-darkBgPrimary dark:border-darkBorder dark:text-darkTextPrimary"
+                >
+                  <SelectValue placeholder="Select manufacturer" />
                 </SelectTrigger>
-                <SelectContent>
-                  {manufacturers.map(man => (
-                    <SelectItem key={man} value={man}>
-                      {man}
+                <SelectContent className="dark:bg-darkBgSecondary dark:border-darkBorder">
+                  <SelectItem value="">None</SelectItem>
+                  {manufacturers.map((manufacturer) => (
+                    <SelectItem 
+                      key={manufacturer.id} 
+                      value={manufacturer.name}
+                      className="dark:text-darkTextPrimary dark:hover:bg-darkBgPrimary"
+                    >
+                      {manufacturer.name}
                     </SelectItem>
                   ))}
-                  {manufacturers.length <= 1 && (
-                     <p className="text-xs text-muted-foreground p-2">No manufacturers found in flavors list.</p>
-                  )}
                 </SelectContent>
               </Select>
-               <p className="text-sm text-muted-foreground">
-                Select "None" to disable the Deals page feature.
-               </p>
+              <p className="text-sm text-gray-500 dark:text-darkTextSecondary">
+                Feature a manufacturer on the Deals page
+              </p>
             </div>
 
-            {/* Dark Mode Toggle */}
-            <div className="space-y-2 pt-2 border-t">
+            {/* Dark Mode Toggle - New Addition */}
+            <div className="space-y-2 pt-4 border-t dark:border-darkBorder">
               <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="dark-mode" className="text-base">Dark Mode</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Toggle between light and dark theme.
-                  </p>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Sun className="h-4 w-4 text-muted-foreground" />
-                  <Switch 
-                    id="dark-mode" 
-                    checked={theme === 'dark'}
-                    onCheckedChange={toggleTheme}
-                  />
-                  <Moon className="h-4 w-4 text-muted-foreground" />
-                </div>
+                <Label htmlFor="darkMode" className="text-lg font-medium dark:text-darkTextPrimary">
+                  Dark Mode
+                </Label>
+                <Switch
+                  id="darkMode"
+                  checked={theme === 'dark'}
+                  onCheckedChange={toggleTheme}
+                  className="data-[state=checked]:bg-primaryAccent"
+                />
               </div>
+              <p className="text-sm text-gray-500 dark:text-darkTextSecondary">
+                Toggle between light and dark theme
+              </p>
             </div>
-
-            {/* Save Button */}
-            <div className="flex justify-end pt-6 border-t mt-6">
-              <Button onClick={() => handleSave()} disabled={saving || loading}>
-                {saving ? 'Saving...' : 'Save Settings'}
+            
+            {/* Actions */}
+            <div className="flex justify-end space-x-3 pt-6">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/admin-portal/dashboard')}
+                className="dark:bg-darkBgPrimary dark:border-darkBorder dark:text-darkTextSecondary"
+                disabled={isSaving}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="dark:bg-primaryAccent dark:text-white"
+              >
+                {isSaving ? 'Saving...' : 'Save Settings'}
               </Button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </AdminLayout>
   );
 };

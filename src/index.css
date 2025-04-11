@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -48,42 +48,42 @@
   }
 
   .dark {
-    --background: 20 10% 5%;
-    --foreground: 30 10% 95%;
+    --background: 240 10% 3.9%; /* Dark bg */
+    --foreground: 0 0% 98%; /* Light text */
 
-    --card: 20 10% 5%;
-    --card-foreground: 30 10% 95%;
+    --card: 240 10% 11%;  /* Dark card surface */
+    --card-foreground: 0 0% 98%; /* Light card text */
 
-    --popover: 20 10% 5%;
-    --popover-foreground: 30 10% 95%;
+    --popover: 240 10% 13%; /* Dark popover */
+    --popover-foreground: 0 0% 98%; /* Light popover text */
 
-    --primary: 204 71% 39%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 260 70% 75%; /* Bright purple primary */
+    --primary-foreground: 0 0% 100%; /* White on primary */
 
-    --secondary: 30 10% 15%;
-    --secondary-foreground: 30 10% 95%;
+    --secondary: 240 10% 15%; /* Dark secondary */
+    --secondary-foreground: 0 0% 98%; /* Light secondary text */
 
-    --muted: 30 10% 15%;
-    --muted-foreground: 30 10% 70%;
+    --muted: 240 10% 22%; /* Darker gray for muted elements */
+    --muted-foreground: 240 10% 70%; /* Lighter muted text */
 
-    --accent: 32 81% 51%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 32 95% 53%; /* Orange accent */
+    --accent-foreground: 0 0% 100%; /* White on accent */
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%; /* Dark red */
+    --destructive-foreground: 210 40% 98%; /* Light text on destructive */
 
-    --border: 30 10% 15%;
-    --input: 30 10% 15%;
-    --ring: 30 10% 83.9%;
+    --border: 240 10% 23%; /* Dark border */
+    --input: 240 10% 20%; /* Dark input */
+    --ring: 260 70% 75%; /* Purple ring */
     
-    --sidebar-background: 20 10% 10%;
-    --sidebar-foreground: 30 10% 95.9%;
-    --sidebar-primary: 204 76.3% 48%;
+    --sidebar-background: 240 10% 9%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 260 70% 75%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 20 10% 15.9%;
-    --sidebar-accent-foreground: 30 10% 95.9%;
-    --sidebar-border: 20 10% 15.9%;
-    --sidebar-ring: 204 71% 59.8%;
+    --sidebar-accent: 240 10% 18%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 10% 22%;
+    --sidebar-ring: 260 70% 75%;
   }
 }
 
@@ -93,7 +93,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground dark:bg-darkBgPrimary dark:text-darkTextPrimary;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
@@ -108,11 +108,11 @@
   }
   
   .category-card {
-    @apply flex flex-col items-center justify-center p-4 rounded-xl bg-white shadow-md cursor-pointer card-hover;
+    @apply flex flex-col items-center justify-center p-4 rounded-xl bg-white dark:bg-darkSurface shadow-md cursor-pointer card-hover;
   }
   
   .flavor-card {
-    @apply flex flex-col rounded-xl bg-white shadow-md overflow-hidden cursor-pointer card-hover;
+    @apply flex flex-col rounded-xl bg-white dark:bg-darkSurface shadow-md overflow-hidden cursor-pointer card-hover;
   }
   
   .nav-item {
@@ -120,7 +120,20 @@
   }
   
   .search-input {
-    @apply w-full rounded-full px-4 py-2 bg-white border border-gray-300 focus:ring-2 focus:ring-primary shadow-sm;
+    @apply w-full rounded-xl px-4 py-2 bg-white dark:bg-darkBgPrimary border border-gray-300 dark:border-darkBorder focus:ring-2 focus:ring-primary dark:focus:ring-primaryAccent shadow-sm;
+  }
+
+  /* Cyborg-inspired components */
+  .cyborg-card {
+    @apply rounded-xl bg-white dark:bg-darkSurface shadow-md overflow-hidden transition-all duration-300;
+  }
+
+  .cyborg-button-primary {
+    @apply bg-primary dark:bg-primaryAccent text-white font-semibold rounded-xl px-5 py-2.5 hover:brightness-110 transition-all duration-200;
+  }
+
+  .cyborg-button-secondary {
+    @apply border border-gray-300 dark:border-darkBorder bg-white dark:bg-darkSurface text-gray-800 dark:text-darkTextSecondary font-semibold rounded-xl px-5 py-2.5 hover:bg-gray-100 dark:hover:bg-darkBgSecondary transition-all duration-200;
   }
 }
 

@@ -52,11 +52,11 @@ const FlavorCard: React.FC<FlavorCardProps> = ({ flavor, currentCategoryType }) 
   return (
     <Link
       to={`/flavor/${flavor.id}`}
-      className="group relative block h-full overflow-hidden rounded-xl bg-background border border-[#e0e0e0] hover:border-primary/20 transition-all duration-300 hover:shadow-lg"
+      className="group flex flex-col h-full overflow-hidden rounded-xl bg-white dark:bg-darkSurface border border-[#e0e0e0] dark:border-darkBorder hover:shadow-lg dark:hover:shadow-black/30 transition-all duration-300"
     >
       {/* Image Container with consistent aspect ratio */}
-      <div className="relative overflow-hidden bg-[#f9f9f9]">
-        <AspectRatio ratio={1/1} className="w-full">
+      <div className="relative overflow-hidden bg-[#f9f9f9] dark:bg-darkBgSecondary">
+        <AspectRatio ratio={16/9} className="w-full">
           <img
             src={imageError ? '/placeholder.svg' : (flavor.imageURL || '/placeholder.svg')}
             alt={flavor.flavorName}
@@ -67,7 +67,7 @@ const FlavorCard: React.FC<FlavorCardProps> = ({ flavor, currentCategoryType }) 
         
         {/* Favorite button */}
         <button
-          className="absolute top-3 right-3 p-1.5 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white shadow-md transition-colors z-10 group-hover:translate-y-0 opacity-100"
+          className="absolute top-3 right-3 p-1.5 bg-white/80 dark:bg-darkBgPrimary/80 backdrop-blur-sm rounded-xl hover:bg-white dark:hover:bg-darkBgPrimary shadow-md transition-colors z-10"
           onClick={handleFavoriteClick}
           aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
         >
@@ -75,27 +75,27 @@ const FlavorCard: React.FC<FlavorCardProps> = ({ flavor, currentCategoryType }) 
             size={20}
             className={cn(
               "transition-colors",
-              favorite ? "fill-red-500 text-red-500" : "text-gray-400"
+              favorite ? "fill-red-500 text-red-500" : "text-gray-400 dark:text-darkTextSecondary"
             )}
           />
         </button>
       </div>
 
       {/* Text Content */}
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-grow">
         {/* Name */}
-        <h3 className="font-semibold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors"> 
+        <h3 className="font-semibold text-base md:text-lg mb-1.5 line-clamp-1 group-hover:text-primary dark:text-darkTextPrimary dark:group-hover:text-primaryAccent transition-colors"> 
           {flavor.flavorName}
         </h3>
         
         {/* Container for Size (Left) and Price (Right) */}
-        <div className="flex justify-between items-center text-sm mb-2">
-          <span className="text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full text-xs font-medium">{displaySize}</span>
-          <span className="font-bold text-base">{displayPrice}</span>
+        <div className="flex justify-between items-center text-sm mb-2.5">
+          <span className="text-gray-500 bg-gray-100 dark:bg-darkBgPrimary dark:text-darkTextSecondary px-2.5 py-0.5 rounded-full text-xs font-medium">{displaySize}</span>
+          <span className="font-bold text-base dark:text-darkTextPrimary">{displayPrice}</span>
         </div>
         
         {/* Short Description */}
-        <p className="text-sm text-gray-600 line-clamp-2 min-h-[2.5rem]">
+        <p className="text-sm text-gray-600 dark:text-darkTextSecondary line-clamp-2 min-h-[2.5rem] mt-auto">
           {flavor.shortDescription || flavor.description?.substring(0, 100) + '...' }
         </p>
       </div>

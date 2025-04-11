@@ -34,34 +34,39 @@ const TypePage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95 dark:from-darkBgPrimary dark:to-darkBgSecondary">
       <Navbar />
 
       <main className="flex-1 p-6 md:p-8 pt-8">
         <div className="container mx-auto max-w-6xl">
-          <h1 className="text-3xl font-bold mb-8 text-center dark:text-white">
+          <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center dark:text-darkTextPrimary">
             Select a Category
           </h1>
           
-          {/* Specifically using a 3-column grid for categories */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          {/* Cyborg style grid with larger cards and overlays */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {Array.isArray(flavorCategories) && flavorCategories.map((category) => (
               <Link
                 key={category}
                 to={type ? `/type/${type}/category/${category}` : '#'}
-                className="overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 border border-gray-200 dark:border-gray-700 group block"
+                className="overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border dark:border-darkBorder group relative"
               >
                 <div
-                  className="h-44 relative bg-gray-200 dark:bg-gray-800"
+                  className="h-48 relative bg-gray-200 dark:bg-darkBgSecondary"
                   style={{
                     backgroundImage: `url(${getCategoryImage(category)})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center'
                   }}
                 >
-                  <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-primary group-hover:bg-opacity-50 transition-all duration-300"></div>
+                  {/* Dark overlay for readability, with purple hue on hover */}
+                  <div className="absolute inset-0 bg-black/50 group-hover:bg-primaryAccent/30 transition-colors duration-300 backdrop-blur-[1px] group-hover:backdrop-blur-0"></div>
+                  
+                  {/* Content - Cyborg style with centered text */}
                   <div className="relative z-10 flex items-center justify-center h-full">
-                    <h2 className="text-2xl font-bold text-white text-center px-4 drop-shadow-md group-hover:scale-105 transition-transform duration-300">{category}</h2>
+                    <div className="bg-black/50 dark:bg-darkBgSecondary/70 backdrop-blur-sm px-6 py-3 rounded-lg group-hover:bg-primaryAccent/60 transform transition-transform duration-300 group-hover:scale-110">
+                      <h2 className="text-xl md:text-2xl font-bold text-white text-center">{category}</h2>
+                    </div>
                   </div>
                 </div>
               </Link>
