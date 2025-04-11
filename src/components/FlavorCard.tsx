@@ -5,7 +5,6 @@ import { Heart } from 'lucide-react';
 import { Flavor, FlavorVariant } from '@/types/flavor';
 import { useFavorites } from '@/contexts/FavoritesContext';
 import { cn } from '@/lib/utils';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface FlavorCardProps {
   flavor: Flavor;
@@ -52,51 +51,49 @@ const FlavorCard: React.FC<FlavorCardProps> = ({ flavor, currentCategoryType }) 
   return (
     <Link
       to={`/flavor/${flavor.id}`}
-      className="group relative block h-full overflow-hidden rounded-xl bg-background border border-[#e0e0e0] hover:border-primary/20 transition-all duration-300 hover:shadow-lg"
+      className="flex flex-col items-center text-center dark:bg-darkBgSecondary rounded-2xl relative overflow-visible pt-[60px] pb-6 px-4 h-[260px] w-full transition-all duration-300 hover:shadow-lg"
     >
-      {/* Image Container with consistent aspect ratio */}
-      <div className="relative overflow-hidden bg-[#f9f9f9]">
-        <AspectRatio ratio={1/1} className="w-full">
-          <img
-            src={imageError ? '/placeholder.svg' : (flavor.imageURL || '/placeholder.svg')}
-            alt={flavor.flavorName}
-            className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
-            onError={() => setImageError(true)}
-          />
-        </AspectRatio>
+      {/* Image in top overlapping position */}
+      <div className="absolute top-[-40px] left-1/2 transform -translate-x-1/2 w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-4 dark:border-darkBgSecondary">
+        <img
+          src={imageError ? '/placeholder.svg' : (flavor.imageURL || '/placeholder.svg')}
+          alt={flavor.flavorName}
+          className="object-cover w-full h-full"
+          onError={() => setImageError(true)}
+        />
         
-        {/* Favorite button */}
+        {/* Favorite button positioned on the image */}
         <button
-          className="absolute top-3 right-3 p-1.5 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white shadow-md transition-colors z-10 group-hover:translate-y-0 opacity-100"
+          className="absolute bottom-0 right-0 p-1.5 bg-white/90 dark:bg-darkBgSecondary/90 backdrop-blur-sm rounded-full hover:bg-white dark:hover:bg-darkBgSecondary shadow-md transition-colors z-10"
           onClick={handleFavoriteClick}
           aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
         >
           <Heart
-            size={20}
+            size={16}
             className={cn(
               "transition-colors",
-              favorite ? "fill-red-500 text-red-500" : "text-gray-400"
+              favorite ? "fill-primaryAccent text-primaryAccent" : "text-gray-400 dark:text-darkTextLight"
             )}
           />
         </button>
       </div>
 
-      {/* Text Content */}
-      <div className="p-4">
-        {/* Name */}
-        <h3 className="font-semibold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors"> 
+      {/* Text Content Area */}
+      <div className="flex flex-col items-center justify-center gap-1 flex-grow mt-2 w-full">
+        {/* Name - allow wrapping with fixed height */}
+        <h3 className="text-sm font-semibold dark:text-darkTextHeading leading-tight line-clamp-2 h-10 mb-1"> 
           {flavor.flavorName}
         </h3>
         
-        {/* Container for Size (Left) and Price (Right) */}
-        <div className="flex justify-between items-center text-sm mb-2">
-          <span className="text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full text-xs font-medium">{displaySize}</span>
-          <span className="font-bold text-base">{displayPrice}</span>
+        {/* Container for Size and Price */}
+        <div className="flex justify-center items-center gap-2 text-sm mb-2">
+          <span className="dark:text-darkTextMuted">{displaySize}</span>
+          <span className="font-semibold dark:text-darkTextHeading">{displayPrice}</span>
         </div>
         
         {/* Short Description */}
-        <p className="text-sm text-gray-600 line-clamp-2 min-h-[2.5rem]">
-          {flavor.shortDescription || flavor.description?.substring(0, 100) + '...' }
+        <p className="text-xs dark:text-darkTextLight line-clamp-2 min-h-[2rem]">
+          {flavor.shortDescription || flavor.description?.substring(0, 50) + '...' }
         </p>
       </div>
     </Link>

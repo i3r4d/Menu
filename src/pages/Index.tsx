@@ -14,15 +14,15 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/95 dark:from-darkBgPrimary dark:to-darkBgPrimary/95">
       <Navbar />
       
       <main className="flex-1 flex flex-col justify-center items-center p-6 md:p-8">
         <div className="container max-w-6xl mx-auto">
           {/* Headline & Description */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-800 dark:text-gray-100">Browse Our Selection</h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Choose between E-Liquid and Salt Nicotine options</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-800 dark:text-darkTextHeading">Browse Our Selection</h1>
+            <p className="text-xl text-gray-600 dark:text-darkTextMuted max-w-2xl mx-auto">Choose between E-Liquid and Salt Nicotine options</p>
           </div>
           
           {/* Type Selection Cards in a 2-column grid */}
@@ -30,7 +30,7 @@ const Index = () => {
             {/* E-Liquid Card */}
             <Link to="/type/E-Liquid">
               <div 
-                className="relative h-80 md:h-96 overflow-hidden rounded-2xl shadow-lg dark:shadow-gray-900/30"
+                className="relative h-80 md:h-96 overflow-hidden rounded-2xl shadow-lg dark:shadow-black/30 transition-transform duration-200 ease-in-out hover:scale-[1.03] hover:shadow-lg"
                 style={{
                   backgroundImage: `url(${getCategoryImage('E-Liquid')})`,
                   backgroundSize: 'cover',
@@ -50,7 +50,7 @@ const Index = () => {
             {/* Salt Nic Card */}
             <Link to="/type/Salt-Nic">
               <div 
-                className="relative h-80 md:h-96 overflow-hidden rounded-2xl shadow-lg dark:shadow-gray-900/30"
+                className="relative h-80 md:h-96 overflow-hidden rounded-2xl shadow-lg dark:shadow-black/30 transition-transform duration-200 ease-in-out hover:scale-[1.03] hover:shadow-lg"
                 style={{
                   backgroundImage: `url(${getCategoryImage('Salt-Nic')})`,
                   backgroundSize: 'cover',

@@ -76,6 +76,16 @@ export default {
 					DEFAULT: '#B7B0AA',
 					dark: '#968F88'
 				},
+				// Figma Dark Mode Colors
+				darkBgPrimary: '#252836',      // Main page background
+				darkBgSecondary: '#1F1D2B',    // Sidebar/Card background
+				darkFormBg: '#2D303E',         // Input background
+				darkBorder: '#393C49',         // Borders/Lines
+				darkTextHeading: '#FFFFFF',    // White headings/primary text
+				darkTextMuted: '#E0E6E9',      // Slightly muted text, like date
+				darkTextLight: '#ABBBC2',      // Lighter/placeholder text
+				primaryAccent: '#EA7C69',      // Primary action color - orange/red
+				primaryAccentHover: '#EB966A', // Potential hover/related color
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -93,7 +103,7 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+				sans: ['Barlow', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
 				heading: ['Poppins', 'system-ui', '-apple-system', 'sans-serif'],
 			},
 			keyframes: {

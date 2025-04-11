@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Barlow:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -48,42 +48,42 @@
   }
 
   .dark {
-    --background: 20 10% 5%;
-    --foreground: 30 10% 95%;
+    --background: 228 16% 17%;   /* #252836 (darkBgPrimary) */
+    --foreground: 0 0% 100%;     /* #FFFFFF (darkTextHeading) */
 
-    --card: 20 10% 5%;
-    --card-foreground: 30 10% 95%;
+    --card: 240 21% 15%;         /* #1F1D2B (darkBgSecondary) */
+    --card-foreground: 0 0% 100%; /* #FFFFFF (darkTextHeading) */
 
-    --popover: 20 10% 5%;
-    --popover-foreground: 30 10% 95%;
+    --popover: 240 21% 15%;      /* #1F1D2B (darkBgSecondary) */
+    --popover-foreground: 0 0% 100%; /* #FFFFFF (darkTextHeading) */
 
-    --primary: 204 71% 39%;
+    --primary: 12 74% 66%;       /* #EA7C69 (primaryAccent) */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 30 10% 15%;
-    --secondary-foreground: 30 10% 95%;
+    --secondary: 228 16% 21%;    /* #2D303E (darkFormBg) */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 30 10% 15%;
-    --muted-foreground: 30 10% 70%;
+    --muted: 228 16% 21%;        /* #2D303E (darkFormBg) */
+    --muted-foreground: 189 10% 85%; /* #E0E6E9 (darkTextMuted) */
 
-    --accent: 32 81% 51%;
+    --accent: 12 74% 66%;        /* #EA7C69 (primaryAccent) */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 30 10% 15%;
-    --input: 30 10% 15%;
-    --ring: 30 10% 83.9%;
+    --border: 227 10% 26%;       /* #393C49 (darkBorder) */
+    --input: 228 16% 21%;        /* #2D303E (darkFormBg) */
+    --ring: 12 74% 66%;          /* #EA7C69 (primaryAccent) */
     
-    --sidebar-background: 20 10% 10%;
-    --sidebar-foreground: 30 10% 95.9%;
-    --sidebar-primary: 204 76.3% 48%;
+    --sidebar-background: 240 21% 15%; /* #1F1D2B (darkBgSecondary) */
+    --sidebar-foreground: 0 0% 100%;   /* #FFFFFF (darkTextHeading) */
+    --sidebar-primary: 12 74% 66%;     /* #EA7C69 (primaryAccent) */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 20 10% 15.9%;
-    --sidebar-accent-foreground: 30 10% 95.9%;
-    --sidebar-border: 20 10% 15.9%;
-    --sidebar-ring: 204 71% 59.8%;
+    --sidebar-accent: 228 16% 21%;     /* #2D303E (darkFormBg) */
+    --sidebar-accent-foreground: 189 10% 85%; /* #E0E6E9 (darkTextMuted) */
+    --sidebar-border: 227 10% 26%;     /* #393C49 (darkBorder) */
+    --sidebar-ring: 12 74% 66%;        /* #EA7C69 (primaryAccent) */
   }
 }
 
@@ -94,11 +94,11 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Barlow', 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+    font-family: 'Barlow', 'Poppins', system-ui, -apple-system, sans-serif;
   }
 }
 
@@ -108,19 +108,19 @@
   }
   
   .category-card {
-    @apply flex flex-col items-center justify-center p-4 rounded-xl bg-white shadow-md cursor-pointer card-hover;
+    @apply flex flex-col items-center justify-center p-4 rounded-xl bg-white dark:bg-darkBgSecondary shadow-md cursor-pointer card-hover;
   }
   
   .flavor-card {
-    @apply flex flex-col rounded-xl bg-white shadow-md overflow-hidden cursor-pointer card-hover;
+    @apply flex flex-col rounded-xl bg-white dark:bg-darkBgSecondary shadow-md overflow-hidden cursor-pointer card-hover;
   }
   
   .nav-item {
-    @apply px-4 py-2 rounded-md hover:bg-primary hover:text-white transition-colors duration-200;
+    @apply px-4 py-2 rounded-md hover:bg-primary hover:text-white dark:hover:text-darkTextHeading dark:hover:bg-primaryAccent transition-colors duration-200;
   }
   
   .search-input {
-    @apply w-full rounded-full px-4 py-2 bg-white border border-gray-300 focus:ring-2 focus:ring-primary shadow-sm;
+    @apply w-full rounded-full px-4 py-2 bg-white dark:bg-darkFormBg border border-gray-300 dark:border-darkBorder focus:ring-2 focus:ring-primary dark:focus:ring-primaryAccent shadow-sm;
   }
 }
 
