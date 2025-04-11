@@ -109,28 +109,27 @@ const AdminSettings = () => {
 
   return (
     <AdminLayout title="Global Settings">
-      <div className="bg-card text-card-foreground dark:bg-darkBgSecondary dark:text-darkTextHeading rounded-lg shadow p-6 max-w-2xl mx-auto border dark:border-darkBorder">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 max-w-2xl mx-auto border">
         {loading ? (
           <div className="flex justify-center items-center py-10">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary dark:border-primaryAccent border-r-2"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary border-r-2"></div>
           </div>
         ) : (
           <div className="space-y-6">
             {/* Logo URL */}
             <div className="space-y-2">
-              <Label htmlFor="logoURL" className="dark:text-darkTextHeading">Shop Logo URL</Label>
+              <Label htmlFor="logoURL">Shop Logo URL</Label>
               <Input
                 id="logoURL"
                 name="logoURL"
                 value={settings.logoURL || ''}
                 onChange={handleInputChange}
                 placeholder="https://..."
-                className="dark:bg-darkFormBg dark:border-darkBorder dark:text-darkTextHeading dark:placeholder:text-darkTextLight"
               />
                {settings.logoURL && (
                     <div className="mt-2">
-                         <p className="text-sm text-muted-foreground dark:text-darkTextMuted mb-1">Preview:</p>
-                         <div className="h-16 w-auto max-w-[150px] bg-muted dark:bg-darkFormBg p-1 rounded inline-block">
+                         <p className="text-sm text-muted-foreground mb-1">Preview:</p>
+                         <div className="h-16 w-auto max-w-[150px] bg-muted p-1 rounded inline-block">
                             <img
                                 src={imageError ? '/placeholder.svg' : settings.logoURL}
                                 alt="Logo Preview"
@@ -144,66 +143,54 @@ const AdminSettings = () => {
 
             {/* Line of the Month */}
             <div className="space-y-2">
-              <Label htmlFor="lineOfTheMonth" className="dark:text-darkTextHeading">Line of the Month</Label>
+              <Label htmlFor="lineOfTheMonth">Line of the Month</Label>
               <Select
                 value={settings.lineOfTheMonth === null ? 'None' : settings.lineOfTheMonth}
                 onValueChange={handleLineChange}
               >
-                <SelectTrigger 
-                  id="lineOfTheMonth"
-                  className="dark:bg-darkFormBg dark:border-darkBorder dark:text-darkTextHeading"
-                >
+                <SelectTrigger id="lineOfTheMonth">
                   <SelectValue placeholder="Select Manufacturer..." />
                 </SelectTrigger>
-                <SelectContent className="dark:bg-darkBgSecondary dark:border-darkBorder">
+                <SelectContent>
                   {manufacturers.map(man => (
-                    <SelectItem 
-                      key={man} 
-                      value={man}
-                      className="dark:text-darkTextHeading dark:focus:bg-darkFormBg dark:data-[state=checked]:text-primaryAccent"
-                    >
+                    <SelectItem key={man} value={man}>
                       {man}
                     </SelectItem>
                   ))}
                   {manufacturers.length <= 1 && (
-                     <p className="text-xs text-muted-foreground dark:text-darkTextLight p-2">No manufacturers found in flavors list.</p>
+                     <p className="text-xs text-muted-foreground p-2">No manufacturers found in flavors list.</p>
                   )}
                 </SelectContent>
               </Select>
-               <p className="text-sm text-muted-foreground dark:text-darkTextLight">
+               <p className="text-sm text-muted-foreground">
                 Select "None" to disable the Deals page feature.
                </p>
             </div>
 
             {/* Dark Mode Toggle */}
-            <div className="space-y-2 pt-2 border-t dark:border-darkBorder">
+            <div className="space-y-2 pt-2 border-t">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="dark-mode" className="text-base dark:text-darkTextHeading">Dark Mode</Label>
-                  <p className="text-sm text-muted-foreground dark:text-darkTextLight">
+                  <Label htmlFor="dark-mode" className="text-base">Dark Mode</Label>
+                  <p className="text-sm text-muted-foreground">
                     Toggle between light and dark theme.
                   </p>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Sun className="h-4 w-4 text-muted-foreground dark:text-darkTextLight" />
+                  <Sun className="h-4 w-4 text-muted-foreground" />
                   <Switch 
                     id="dark-mode" 
                     checked={theme === 'dark'}
                     onCheckedChange={toggleTheme}
-                    className="data-[state=checked]:bg-primaryAccent data-[state=checked]:border-primaryAccent"
                   />
-                  <Moon className="h-4 w-4 text-muted-foreground dark:text-darkTextLight" />
+                  <Moon className="h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
             </div>
 
             {/* Save Button */}
-            <div className="flex justify-end pt-6 border-t dark:border-darkBorder mt-6">
-              <Button 
-                onClick={() => handleSave()} 
-                disabled={saving || loading}
-                className="bg-primary dark:bg-primaryAccent hover:bg-primary/90 dark:hover:bg-primaryAccent/90 text-white dark:text-darkTextHeading"
-              >
+            <div className="flex justify-end pt-6 border-t mt-6">
+              <Button onClick={() => handleSave()} disabled={saving || loading}>
                 {saving ? 'Saving...' : 'Save Settings'}
               </Button>
             </div>
